@@ -1,0 +1,83 @@
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <array>
+#include <vector>
+#include <climits>
+using namespace std;
+/*
+//i could lowk use recursion for this??
+bool checkIfCanFit(vector<int> boxDimensions, vector<int> productDimensions){
+    int tempholder;
+    vector<int> p;
+    vector<int> b;
+    
+    if(boxDimensions.size() == 0){
+        return true;
+    }
+
+    for(int x = 0; x < boxDimensions.size(); x++){
+        for(int y = 0; y < productDimensions.size(); y++){
+            b = boxDimensions;
+            p = productDimensions;
+            if(productDimensions[y] <= boxDimensions[x]){
+                p.erase(p.begin() + y);
+                b.erase(b.begin() + x);
+                if(checkIfCanFit(b, p)){
+                    return true;
+                }   
+            }
+        }
+    }
+    return false;
+}
+    */
+bool checkIfCanFit(vector<int> b, vector<int> p){
+    sort(b.begin(), b.end());
+    sort(p.begin(), p.end());
+    for(int x = 0; x < b.size(); x++){
+        if(p[x] > b[x]){
+            return false;
+        }
+    }
+    return true;
+}
+int getVolume(vector<int> box){
+    return box[0]*box[1]*box[2];
+}
+int main(){
+    int numberOfDiffBoxSizes;
+    int numberOfDiffProductSizes;
+    cin>>numberOfDiffBoxSizes;
+    int length, width, height;
+    vector<vector<int>> dimensions;
+    vector<int> temporaryDimensionsHolder;
+    int minNumber = INT_MAX;
+    for(int x = 0; x < numberOfDiffBoxSizes; x++){
+        cin>>length >> width>> height;
+        temporaryDimensionsHolder.push_back(length);
+        temporaryDimensionsHolder.push_back(width);
+        temporaryDimensionsHolder.push_back(height);
+        dimensions.push_back(temporaryDimensionsHolder);
+        temporaryDimensionsHolder.clear();
+    }
+    cin>>numberOfDiffProductSizes;
+    for(int x = 0; x < numberOfDiffProductSizes; x++){
+        minNumber = INT_MAX;
+        bool isFound = false;
+        cin>>length >> width >> height;
+        for(int y = 0; y < numberOfDiffBoxSizes; y++){
+            if(checkIfCanFit(dimensions[y], {length, width, height})){
+                if(getVolume(dimensions[y]) < minNumber){
+                    minNumber = getVolume(dimensions[y]);
+                    isFound = true;
+                }
+            }
+        }
+        if(isFound){
+            cout<<'\n'<<minNumber;
+        } else{
+            cout<<"\nItem does not fit.";
+        }
+    }
+}
