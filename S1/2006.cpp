@@ -11,6 +11,7 @@
 
 using namespace std;
 
+
 vector<char> motherGenes;
 vector<char> fatherGenes;
 bool checkIsPossible(char babyGene, int index){
