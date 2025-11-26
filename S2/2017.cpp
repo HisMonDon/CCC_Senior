@@ -11,26 +11,25 @@
 using namespace std;
 
 int main() {
-    int n;
-    cin >> n;
-    vector<int> a(n);
-    for (int i = 0; i < n; i++) {
-      cin >> a[i];
-    }
-    sort(a.begin(), a.end());
-    int lowCount = ceil(n/2.0);
-    int highCount = n - lowCount;
-   /* for(int x : a){
-      cout<<x<<" ";
-    } cout<<endl;*/
-    vector<int> low(a.begin(), a.begin() + lowCount);
-    vector<int> high(a.begin() + lowCount, a.end());
-    reverse(low.begin(), low.end());
-
-    for (int i = 0; i < n - lowCount; i++) {
-        cout << low[i] << " " << high[i] << " ";
-    }
-    if (lowCount > highCount){
-      cout << low.back();
-    }
+  int numOfWaves;
+  cin>>numOfWaves;
+  cin.ignore();
+  string waves;
+  vector<int> waveList;
+  int wave;
+  getline(cin, waves);
+  stringstream ss(waves);
+  while(ss >> wave){
+    waveList.push_back(wave);
+  }
+  sort(waveList.begin(), waveList.end());
+  vector<int> l(waveList.begin(), waveList.begin() + ceil(numOfWaves/2.0));
+  vector<int> h(waveList.begin() + ceil(numOfWaves/2.0), waveList.end());
+  reverse(l.begin(),l.end());
+  for(int x = 0; x < h.size(); x++){
+    cout<<l[x]<<" "<<h[x]<<" ";
+  }
+  if(l.size() > h.size()){
+    cout<<l.back();
+  }
 }
