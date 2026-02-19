@@ -1,67 +1,45 @@
-#include <iostream>
-#include <vector>
-#include <numeric>
-#include <algorithm>
-
+#include <bits/stdc++.h>
 using namespace std;
 
-struct Yodeller {
-    int id;
-    int score;
-    int worst_rank;
-
-    Yodeller(int id) : id(id), score(0), worst_rank(1) {}
-};
-
-bool compareYodellers(const Yodeller& a, const Yodeller& b) {
-    if (a.score != b.score) {
-        return a.score > b.score;
+vector<vector<int>> grid; //3 elements [0]: yodeller index, [1]: worst rank, [2]: score
+int n, r;
+int getIndex(int i){
+    for(int x = 0; x < n; x++){
+        if(grid[x][0] == i){
+            return x;
+        }
     }
-    return a.id < b.id;
 }
-
-int calculate_rank(const vector<Yodeller>& yodellers, int yodeller_index) {
-    int rank = 1;
-    for (size_t i = 0; i < yodellers.size(); ++i) {
-        if (i != yodeller_index && yodellers[i].score > yodellers[yodeller_index].score) {
-            rank++;
+int main(){
+    cin>>n>>r; int i;
+    for(int x = 0; x < n; x++){
+        grid.push_back({x, 0, 0});
+    }
+    for(int x = 0; x < r; x++){
+        for(int y = 0; y < n; y++){
+            cin>>i; grid[getIndex(y)][2] += i;
+        }
+        sort(grid.begin(), grid.end(), [](vector<int>&a, vector<int>&b){return a[2] > b[2];});
+        int rank = 0;
+        int prevscore = INT_MAX;
+        for(int z = 0; z < n; z++){
+            if(grid[z][2] != prevscore){
+                rank++;
+            }
+            if(grid[z][1] < rank){
+                grid[z][1] = rank;
+            }
+            prevscore = grid[z][2];
         }
     }
-    return rank;
-}
-
-int main() {
-    int n, k;
-    cin >> n >> k;
-
-    vector<Yodeller> yodellers;
-    for (int i = 1; i <= n; ++i) {
-        yodellers.emplace_back(i);
+    vector<vector<int>>winners;
+    int maxScore = grid[0][2];
+    for(vector<int> x : grid){
+        if(x[2] != maxScore){break;}
+        winners.push_back(x);
     }
-
-    for (int round = 0; round < k; ++round) {
-        vector<int> round_scores(n);
-        for (int i = 0; i < n; ++i) {
-            cin >> round_scores[i];
-            yodellers[i].score += round_scores[i];
-        }
-
-        for (int i = 0; i < n; ++i) {
-            int current_rank = calculate_rank(yodellers, i);
-            yodellers[i].worst_rank = max(yodellers[i].worst_rank, current_rank);
-        }
+    sort(winners.begin(), winners.end(), [](vector<int>&a, vector<int>&b){return a[0] < b[0];});
+    for(vector<int> x : winners){
+        cout<<"Yodeller "<<x[0] + 1<<" is the TopYodeller: score "<<x[2]<<", worst rank "<<x[1]<<"\n";
     }
-
-    sort(yodellers.begin(), yodellers.end(), compareYodellers);
-
-    int top_score = yodellers[0].score;
-    for (const auto& y : yodellers) {
-        if (y.score == top_score) {
-            cout << "Yodeller " << y.id << " is the TopYodeller: score " << y.score << ", worst rank " << y.worst_rank << endl;
-        } else {
-            break;
-        }
-    }
-
-    return 0;
 }
